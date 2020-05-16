@@ -24,6 +24,7 @@ options="$4"           #rclone options like "--filter-from=filter_patterns --che
                        #do not put these in options: --backup-dir, --suffix, --log-file
 job_name="$5"          #job_name="$(basename $0)"
 monitoring_URL="$6"    #cron monitoring service URL to send email if cron failure or other error prevented back up
+custom_log_file="$7"   #use a custom log file
 
 ################################ set variables ###############################
 # $new is the directory name of the current snapshot
@@ -38,7 +39,12 @@ log_file="${path%.*}.log"               #replace path extension with "log"
 #log_file="/var/log/rclone_jobber.log"  #for Logrotate
 
 # set log_option for rclone
-log_option="--log-file=$log_file"       #log to log_file
+if ! [ -z "$custom_log_file" ];
+then
+        log_option="--log-file=$custom_log_file"
+else
+	log_option="--log-file=$log_file"
+fi
 #log_option="--syslog"                  #log to systemd journal
 
 ################################## functions #################################
